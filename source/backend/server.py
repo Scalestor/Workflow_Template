@@ -15,7 +15,7 @@ def get_data():
     engine = create_engine(database.database_engine_string, echo=True)
     inspector = inspect(engine)
     tables = inspector.get_table_names()
-    return jsonify({"message": f"Data fetched from backend! {tables}"})
+    return jsonify({"message": tables})
 
 #@app.route('/api/process', methods=['POST'])
 #def process_data():

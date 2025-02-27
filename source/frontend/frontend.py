@@ -18,8 +18,8 @@ def home():
 def get_data():
     backend_url = 'http://localhost:5001/api/data'
     response = requests.get(backend_url)
-    data_from_backend = response.json()  # Get the JSON data
-
+    data_from_backend = response.json()["message"]  # Get the JSON data
+    
     return jsonify({"message": f"Hello from Flask, dynamically loaded! {data_from_backend}"})
 
 
