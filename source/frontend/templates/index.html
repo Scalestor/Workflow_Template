@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask with JavaScript</title>
+</head>
+<body>
+    <h1>Backend Response:</h1>
+    <p id="response-text">Loading...</p>
+
+    <script>
+        // Fetch data from Flask API
+        fetch("/get-data")
+        .then(response => response.json()) // Convert response to JSON
+        .then(data => {
+            document.getElementById("response-text").innerText = data.message; // Update webpage
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    </script>
+</body>
+</html>
