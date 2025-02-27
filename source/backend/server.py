@@ -1,15 +1,18 @@
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import  sessionmaker
+from flask import Flask, jsonify
 
-from config.database import database_engine_string
-from flask import Flask, jsonify, request
+
+
+from source.config import database
+
 
 app = Flask(__name__)
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
     # Example business logic
-    engine = create_engine(database_engine_string, echo=True)
+    engine = create_engine(database.database_engine_string, echo=True)
     inspector = inspect(engine)
     tables = inspector.get_table_names()
     return jsonify({"message": f"Data fetched from backend! {tables}"})
