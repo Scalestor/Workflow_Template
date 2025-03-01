@@ -3,20 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask with JavaScript</title>
+    <title>Table Viewer</title>
+    <script>
+        // Fetch and display list of tables on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/get-tables")
+                .then(response => response.json())
+                .then(tables => {
+                    const tableList = document.getElementById("table-list");
+                    tables.forEach(table => {
+                        let li = document.createElement("li");
+                        li.textContent = table;
+                        li.style.cursor = "pointer";
+                        li.onclick = () => fetchTableData(table);
+                        tableList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error("Error fetching tables:", error));
+        });
+
+        // ✅ Fetch data for a selected table using POST
+        function fetchTableData(tableName) {
+            fetch("/get-data", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ table: tableName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // ✅ Display the message
+                let messageElement = document.getElementById("message");
+                if (messageElement) {
+                    messageElement.innerText = `Message: ${data.message}`;
+                }
+
+                // ✅ Display the data value (even if it's 0)
+                let dataElement = document.getElementById("data-value");
+                if (dataElement) {
+                    dataElement.innerText = `Data Value: ${data.data}`;
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        }
+
+    </script>
 </head>
 <body>
-    <h1>Backend Response:</h1>
-    <p id="response-text">Loading...</p>
+    <h1>Table Viewer</h1>
 
-    <script>
-        // Fetch data from Flask API
-        fetch("/get-data")
-        .then(response => response.json()) // Convert response to JSON
-        .then(data => {
-            document.getElementById("response-text").innerText = data.message; // Update webpage
-        })
-        .catch(error => console.error("Error fetching data:", error));
-    </script>
+    <h2>Available Tables:</h2>
+    <ul id="table-list"></ul>
+
+    <div>
+        <h2>Message:</h2>
+        <p id="message">Select a table to view its data</p>  <!-- ✅ Message Placeholder -->
+    </div>
+
+    <div>
+        <h2>Data Value:</h2>
+        <p id="data-value">No data yet</p>  <!-- ✅ Data Placeholder -->
+    </div>
 </body>
+
 </html>
