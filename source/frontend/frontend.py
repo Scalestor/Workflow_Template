@@ -1,7 +1,5 @@
 from flask import Flask, jsonify, render_template,request
 import requests
-import backend_requests
-
 
 
 app = Flask(__name__)
@@ -41,6 +39,7 @@ def get_data():
     backend_response = requests.post(backend_url, json={"table": table_name})
     print(f"Backend response request: {backend_response}")
     print(f"Backend response request: {backend_response.text}")
+    
     # Work with the response to generate the new response
     if backend_response.status_code == 200:
         message_from_backend = backend_response.json().get("message", "No message received")

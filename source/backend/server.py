@@ -40,7 +40,6 @@ def handle_request(resource):
             result = connection.execute(query).scalar()
             response = {"message": f"Data from query {query}" , "data":result}
             print(f"Message built: {response}")
-            #rows = [dict(row) for row in result.mappings()]  # Convert to JSON format
             return jsonify(response)
         
 
