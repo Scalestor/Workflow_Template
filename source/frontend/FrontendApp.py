@@ -38,6 +38,7 @@ class FrontendApp:
         @self.app.route("/get-tables", methods=['GET'])
         def get_tables():
             tables = self.backend_api_client.get_tables()
+            print(f"Response from backend {tables}")
             return jsonify(tables)
 
         @self.app.route("/get-data", methods=['POST'])

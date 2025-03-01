@@ -9,7 +9,7 @@ class BackendAPIClient:
         try:
             response = requests.get(f"{self.backend_url}/api/tables")
             response.raise_for_status()
-            return response.json()["message"]
+            return response.json()
         except requests.exceptions.RequestException as e:
             print(f"Error fetching tables: {e}")
             return {"error": f"Error fetching tables: {e}"}

@@ -17,7 +17,7 @@ class BackendServer:
         """Set up Flask routes."""
         @self.app.before_request
         def log_request():
-            print(f"Incoming request: {request.method} {request.url} 'Args' {request.args} 'Data' {request.data}")
+            print(f"Incoming request: {request.method} {request.url} ")
 
         @self.app.route('/api/<resource>', methods=["GET", "POST"])
         def handle_request(resource):

@@ -4,67 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table Viewer</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #table-list { margin-top: 20px; list-style-type: none; padding: 0; }
+        .table-item { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            margin-bottom: 5px;
+        }
+        #message-container { margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h2>Available Tables</h2>
+    <div id="message-container"></div>  <!-- Displays backend message -->
+    <ul id="table-list"></ul>  <!-- List of tables will be populated here -->
+
     <script>
-        // Fetch and display list of tables on page load
         document.addEventListener("DOMContentLoaded", function () {
-            fetch("/get-tables")
+            fetch("/get-tables")  // Call the API
                 .then(response => response.json())
-                .then(tables => {
+                .then(responseData => {
+                    // Display message from backend
+                    document.getElementById("message-container").innerText = responseData.message;
+
+                    // Get tables from response and display them
                     const tableList = document.getElementById("table-list");
-                    tables.forEach(table => {
-                        let li = document.createElement("li");
-                        li.textContent = table;
-                        li.style.cursor = "pointer";
-                        li.onclick = () => fetchTableData(table);
-                        tableList.appendChild(li);
+                    tableList.innerHTML = "";  // Clear previous entries
+
+                    responseData.data.forEach(table => {
+                        let listItem = document.createElement("li");
+                        listItem.className = "table-item";
+                        listItem.innerHTML = `<span>${table}</span>`;
+                        tableList.appendChild(listItem);
                     });
                 })
                 .catch(error => console.error("Error fetching tables:", error));
         });
-
-        // ✅ Fetch data for a selected table using POST
-        function fetchTableData(tableName) {
-            fetch("/get-data", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ table: tableName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                // ✅ Display the message
-                let messageElement = document.getElementById("message");
-                if (messageElement) {
-                    messageElement.innerText = `Message: ${data.message}`;
-                }
-
-                // ✅ Display the data value (even if it's 0)
-                let dataElement = document.getElementById("data-value");
-                if (dataElement) {
-                    dataElement.innerText = `Data Value: ${data.data}`;
-                }
-            })
-            .catch(error => console.error("Error:", error));
-        }
-
     </script>
-</head>
-<body>
-    <h1>Table Viewer</h1>
 
-    <h2>Available Tables:</h2>
-    <ul id="table-list"></ul>
-
-    <div>
-        <h2>Message:</h2>
-        <p id="message">Select a table to view its data</p>  <!-- ✅ Message Placeholder -->
-    </div>
-
-    <div>
-        <h2>Data Value:</h2>
-        <p id="data-value">No data yet</p>  <!-- ✅ Data Placeholder -->
-    </div>
 </body>
-
 </html>
