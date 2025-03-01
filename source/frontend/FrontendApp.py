@@ -1,18 +1,29 @@
 from flask import Flask, jsonify, render_template, request
-import requests
+import os
 
-import BackendAPIClient
-
-
+from source.frontend.BackendAPIClient import  BackendAPIClient
+from source.config.backend import backend_url
+from source.config.webserver import frontend_host,frontend_port
 
 class FrontendApp:
     def __init__(self, app_name, backend_url):
-        self.app = Flask(app_name)
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+        # This feels wrong
+        template_folder = os.path.join(project_root, 'source','frontend','templates')
+        static_folder = os.path.join(project_root, 'source','frontend','static')
+        print(f"Template folder {template_folder}")
+        print(f"Static folder {static_folder}")
+        self.app = Flask(
+            app_name,
+            template_folder=template_folder,  # Set the correct path to templates
+            static_folder=static_folder       # Set the correct path to static files
+        )
         self.backend_api_client = BackendAPIClient(backend_url)
         self.setup_routes()
 
     def setup_routes(self):
         """Set up Flask routes."""
+
         @self.app.before_request
         def log_request():
             print(f"Incoming request: {request.method} {request.url}")
@@ -20,6 +31,7 @@ class FrontendApp:
         @self.app.route("/")
         def home():
             # Fetch data from the backend API (GET request)
+            print(f"Initial home")
             tables = self.backend_api_client.get_tables()
             return render_template('index.html', data=tables)
 
@@ -38,15 +50,12 @@ class FrontendApp:
 
             return jsonify({"error": "This endpoint only accepts POST requests"}), 405
 
-    def run(self, host="127.0.0.1", port=5000):
+    def run(self, host=frontend_host, port=frontend_port):
         """Run the Flask application."""
         self.app.run(host=host, port=port, debug=True)
 
 
-if __name__ == "__main__":
-    # Define the backend server URL (assumed to be running on localhost:5001)
-    backend_url = 'http://localhost:5001'
-    
+if __name__ == "__main__":   
     # Initialize the frontend Flask app
     app = FrontendApp("FrontendApp", backend_url)
     

@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
-import DatabaseRequestHandler,RequestHandler
+from source.backend.DatabaseRequestHandler import DatabaseRequestHandler 
+from source.backend.FrontendRequestHandler import FrontendRequestHandler
 from source.config import database
 
 class BackendServer:
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     db_handler = DatabaseRequestHandler(database_engine_string)
 
     # Initialize request handler with the database handler
-    request_handler = RequestHandler(db_handler)
+    request_handler = FrontendRequestHandler(db_handler)
 
     # Initialize Flask app with handlers
     app = BackendServer("BackendApp", db_handler, request_handler)
