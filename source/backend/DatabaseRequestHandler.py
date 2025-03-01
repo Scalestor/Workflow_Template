@@ -1,9 +1,11 @@
-from flask import Flask, request, jsonify
+### This class serves as an intermediary between the database and the backend-server
+###
+
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
 
 
-class DatabaseHandler:
+class DatabaseRequestHandler:
     def __init__(self, database_engine_string):
         self.engine = create_engine(database_engine_string, echo=True)
         self.inspector = inspect(self.engine)

@@ -1,9 +1,14 @@
+### This class handles the requests against the database handler.
+
+###
+
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
+from source.backend.DatabaseRequestHandler import DatabaseHandler
 
-class RequestHandler:
-    def __init__(self, db_handler):
+class DatabaseRequestHandler:
+    def __init__(self, db_handler:DatabaseHandler):
         self.db_handler = db_handler
 
     def handle_tables_request(self):

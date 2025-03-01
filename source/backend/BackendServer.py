@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.exc import SQLAlchemyError
+import DatabaseRequestHandler,RequestHandler
+from source.config import database
 
-class FlaskApp:
+class BackendServer:
     def __init__(self, app_name, db_handler, request_handler):
         self.app = Flask(app_name)
         self.db_handler = db_handler
@@ -36,3 +38,18 @@ class FlaskApp:
     def run(self, host="127.0.0.1", port=5001):
         """Run the Flask application."""
         self.app.run(host=host, port=port)
+
+
+if __name__ == '__main__':
+    # Initialize database handler with the connection string
+    database_engine_string = database.database_engine_string
+    db_handler = DatabaseRequestHandler(database_engine_string)
+
+    # Initialize request handler with the database handler
+    request_handler = RequestHandler(db_handler)
+
+    # Initialize Flask app with handlers
+    app = BackendServer("BackendApp", db_handler, request_handler)
+
+    # Run the application
+    app.run()        
